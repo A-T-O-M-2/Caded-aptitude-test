@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <h1>Aptitude Test Payment</h1>
+    <a href="{{ stripe_checkout_url }}" id="checkout-button">Pay Now</a>
+
+    <script>
+        var stripe = Stripe('{{ stripe_publishable_key }}');
+        var checkoutButton = document.getElementById('checkout-button');
+
+        checkoutButton.addEventListener('click', function() {
+            stripe.redirectToCheckout({
+                sessionId: '{{ session_id }}'
+            }).then(function(result) {
+                // Handle result.error if applicable
+                console.log(result.error.message);
+            });
+        });
+    </script>
+</body>
+</html>
