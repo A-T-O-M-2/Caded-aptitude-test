@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+    <link rel="stylesheet" href="../static/style.css">
     <title>Test</title>
     <style>
         /* removes selection */
@@ -88,7 +90,7 @@
 </head>
 <body>
     <h1>Test</h1>
-    <p>Time remaining: <span id="timer">90:00</span></p>
+    <p class="sticky-div">Time remaining: <span id="timer">90:00</span></p>
     <form method="post" action="{{ url_for('test') }}">
         {% for section, questions in test_questions.items() %}
         <h2>{{ section }}</h2>
