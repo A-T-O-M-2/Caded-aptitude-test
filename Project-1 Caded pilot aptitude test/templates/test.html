@@ -1,129 +1,26 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <link rel="stylesheet" href="../static/style.css">
-    <title>Test</title>
-    <style>
-        /* removes selection */
-        body {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        /* doesnt allow to print */
-        @media print {
-            body {
-                display: none;
-            }
-        }
-    </style>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        // right-click disable
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'PrintScreen') {
-                alert('This has taken into consideration. One more attempt to take a screenshot, It will be notified to the company.');
-            }
-        });
-        
-        let tabSwitchCounter = 0;
-        let remainingTime = 90 * 60; // Initial remaining time in seconds
-
-        document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === 'hidden') {
-                
-                if (tabSwitchCounter > 0) {
-                    alert("You've switched tabs or minimized the window. Doing it again may lead to heavy penality");
-                    remainingTime -= 5 * tabSwitchCounter * 60; // Deduct 5 minutes (5 * 60 seconds)
-                }
-                tabSwitchCounter++;
-                
-            } 
-        });
-
-        $(document).ready(function() {
-            function disableBack() {
-                window.history.forward();
-            }
-
-            window.onload = disableBack();
-            window.onpageshow = function(evt) {
-                if (evt.persisted) disableBack();
-            }
-
-            // Timer functionality
-            var timerInterval;
-
-            function startTimer() {
-                timerInterval = setInterval(updateTimer, 1000);
-            }
-
-            function updateTimer() {
-                remainingTime--;
-                var minutes = Math.floor(remainingTime / 60);
-                var seconds = remainingTime % 60;
-                var formattedTime = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
-                $('#timer').text(formattedTime);
-
-                if (remainingTime <= 0) {
-                    clearInterval(timerInterval);
-                    submitForm();
-                }
-            }
-
-            function submitForm() {
-                $('form').submit();
-            }
-
-            startTimer();
-        });
-    </script>
+    <title>Aptitude Test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Test</h1>
-    <p class="sticky-div">Time remaining: <span id="timer">90:00</span></p>
-    <form method="post" action="{{ url_for('test') }}">
-        {% for section, questions in test_questions.items() %}
-        <h2>{{ section }}</h2>
-        {% for question in questions %}
-        <div class="question">
-            <p>{{ question.text }}</p>
-            {% for option in question.options %}
-            <div>
-                <input type="radio" name="question{{ question.id }}" value="{{ option.id }}">
-                <label>{{ option.text }}</label>
-            </div>
-            {% endfor %}
-            <button class="clear-selection" style="display: none;">Clear Selection</button>
-        </div>
-        {% endfor %}
-        {% endfor %}
-        <button type="submit">Submit</button>
-    </form>
+    <div class="index-container">
 
-    <script>
-        $(document).ready(function() {
-            $('input[type="radio"]').change(function() {
-                var clearButton = $(this).closest('.question').find('.clear-selection');
-                clearButton.show();
-            });
-
-            $('.clear-selection').click(function(e) {
-                e.preventDefault(); // Prevent form submission
-                var questionDiv = $(this).closest('.question');
-                questionDiv.find('input[type="radio"]').prop('checked', false);
-                $(this).hide(); // Hide the "Clear Selection" button
-            });
-        });
-    </script>
+        <h1>Aptitude Test</h1>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <form method="post">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <button type="submit">Start Test</button>
+        </form>
+    </div>
+    
 </body>
 </html>
