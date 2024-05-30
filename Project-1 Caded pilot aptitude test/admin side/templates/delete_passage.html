@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Delete Passage</h1>
+<form method="post">
+    <label for="passage_id">Passage ID:</label>
+    <input type="text" name="passage_id" id="passage_id" required>
+    <button type="submit">Delete Passage</button>
+</form>
+{% endblock %}

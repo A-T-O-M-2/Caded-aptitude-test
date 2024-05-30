@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Delete Option</h1>
+<form method="post">
+    <label for="option_id">Option ID:</label>
+    <input type="text" name="option_id" id="option_id" required>
+    <button type="submit">Delete Option</button>
+</form>
+{% endblock %}
+

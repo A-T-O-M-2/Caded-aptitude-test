@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Delete Question</h1>
+<form method="post">
+    <label for="question_id">Question ID:</label>
+    <input type="text" name="question_id" id="question_id" required>
+    <button type="submit">Delete Question</button>
+</form>
+{% endblock %}

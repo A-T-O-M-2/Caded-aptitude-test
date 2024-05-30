@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+<h1>Add Question</h1>
+{{ wtf.quick_form(form) }}
+<div id="options-container">
+    <!-- Options will be added dynamically -->
+</div>
+<button id="add-option-btn">Add Option</button>
+<button id="submit-btn" type="submit">Submit</button>
+{% endblock %}

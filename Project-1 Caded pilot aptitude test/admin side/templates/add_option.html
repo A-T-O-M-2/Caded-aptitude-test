@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+<h1>Add Option</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <label for="question_id">Question ID:</label>
+    <input type="text" name="question_id" id="question_id" required>
+    {{ wtf.form_field(form.option_text) }}
+    {{ wtf.form_field(form.is_correct) }}
+    {{ wtf.form_field(form.submit) }}
+</form>
+{% endblock %}

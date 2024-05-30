@@ -36,7 +36,6 @@ def get_random_questions(section, num_questions):
         subsection_questions = get_questions_by_subsection(section, subsection)
         num_subsection_questions = min(len(subsection_questions), int(remaining_questions / (len(subsections) - len(questions))))
         questions.extend(random.sample(subsection_questions, num_subsection_questions))
-        subsection_scores[subsection]["total"] += num_subsection_questions
         remaining_questions -= num_subsection_questions
 
     random.shuffle(questions)
@@ -55,8 +54,9 @@ def get_subsections(section):
 
 def get_questions_by_subsection(section, subsection):
     sql = """
-        SELECT q.question_id, q.question_text, q.section, q.subsection
+        SELECT q.question_id, q.question_text, q.section, q.subsection, qi.image_data
         FROM questions q
+        LEFT JOIN question_images qi ON q.question_id = qi.question_id
         WHERE q.section = %s AND q.subsection = %s
     """
     values = (section, subsection)
@@ -65,18 +65,20 @@ def get_questions_by_subsection(section, subsection):
 
     options_dict = defaultdict(list)
     for question in questions:
-        question_id, question_text, section, subsection = question
+        question_id, question_text, section, subsection, question_image_data = question
         options_dict[question_id] = {
             "id": question_id,
             "text": question_text,
             "section": section,
             "subsection": subsection,
+            "question_image_data": question_image_data,
             "options": []
         }
 
     sql = """
-        SELECT o.question_id, o.option_id, o.option_text, o.is_correct
+        SELECT o.question_id, o.option_id, o.option_text, o.is_correct, oi.image_data
         FROM options o
+        LEFT JOIN option_images oi ON o.option_id = oi.option_id
         JOIN questions q ON o.question_id = q.question_id
         WHERE q.section = %s AND q.subsection = %s
     """
@@ -85,11 +87,12 @@ def get_questions_by_subsection(section, subsection):
     options = cursor.fetchall()
 
     for option in options:
-        question_id, option_id, option_text, is_correct = option
+        question_id, option_id, option_text, is_correct, option_image_data = option
         options_dict[question_id]["options"].append({
             "id": option_id,
             "text": option_text,
-            "is_correct": is_correct
+            "is_correct": is_correct,
+            "option_image_data": option_image_data
         })
 
     return list(options_dict.values())
@@ -102,6 +105,25 @@ def generate_test(num_questions):
         sections_with_questions[section] = get_random_questions(section, num_questions)
 
     return sections_with_questions
+
+def get_section_for_question(question_id):
+    sql = "SELECT section FROM questions WHERE question_id = %s"
+    values = (question_id,)
+
+    try:
+        cursor.execute(sql, values)
+        result = cursor.fetchone()
+        if result:
+            section = result[0]
+            if section is None:
+                print(f"Warning: Question {question_id} has a NULL section.")
+            return section
+        else:
+            print(f"Warning: No section found for question {question_id}.")
+            return None
+    except mysql.connector.Error as error:
+        print(f"Error fetching section: {error}")
+        return None
 
 def get_subsection_for_question(question_id):
     sql = "SELECT subsection FROM questions WHERE question_id = %s"
@@ -149,18 +171,20 @@ def get_correct_option(question_id):
             cursor.close()
         if 'db' in locals() and db.is_connected():
             db.close()
+physics =[]
+maths =[]
 
     
-def calculate_score_and_send_email(subsection_scores):
+def calculate_score_and_send_email(section_scores):
     total_score = 0
     total_questions = 0
     result_lines = []
     result_lines.append("Result:")
-    for subsection, score in subsection_scores.items():
-        if subsection is not None:  # Check if subsection is not None
+    for section, score in section_scores.items():
+        if section is not None:  # Check if subsection is not None
             correct = score["correct"]
             total = score["total"]
-            result_line = f"{subsection}: {correct}/{total}"
+            result_line = f"{section}: {correct}/{total}"
             if(total!=0):
                 result_lines.append(result_line)
             total_score += correct
@@ -169,18 +193,18 @@ def calculate_score_and_send_email(subsection_scores):
     result_lines.append(f"\nTotal Score: {total_score}/{total_questions}\n\n\n")
     
 
-    for subsection, score in subsection_scores.items():
-        if subsection is not None:  # Check if subsection is not None
+    for section, score in section_scores.items():
+        if section is not None:  # Check if subsection is not None
             correct = score["correct"]
             total = score["total"]
             if(total!=0):
                 result_line=""
                 if(correct/total<0.35):
-                    result_line = f"need too much improvement in this {subsection}\n"
+                    result_line = f"need too much improvement in this {section}\n"
                 elif(correct/total<0.6):
-                    result_line=f"need improvement in this {subsection}\n"
+                    result_line=f"need improvement in this {section}\n"
                 elif(correct/total>0.85):
-                    result_line=f"{subsection} is a strength of yours\n"
+                    result_line=f"{section} is a strength of yours\n"
                 result_lines.append(result_line)
 
     result_message = "\n".join(result_lines)
@@ -306,10 +330,10 @@ def evaluate_user_answers(user_answers):
     for question_id, answer_id in user_answers.items():
         if question_id.startswith('question'):
             correct_option = get_correct_option(int(question_id.replace('question', '')))
-            subsection = get_subsection_for_question(int(question_id.replace('question', '')))
+            section = get_section_for_question(int(question_id.replace('question', '')))
 
             if int(answer_id) == correct_option:
-                subsection_scores[subsection]["correct"] += 1
+                section_scores[section]["correct"] += 1
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -328,7 +352,7 @@ def index():
 
     return render_template('index.html')
 
-subsection_scores = defaultdict(lambda: {"correct": 0, "total": 0})
+section_scores = defaultdict(lambda: {"correct": 0, "total": 20})
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
@@ -350,8 +374,8 @@ def test():
         # Time limit exceeded, evaluate user answers and redirect to the thank you page
         user_answers = session.get('user_answers', {})
         evaluate_user_answers(user_answers)
-        subsection_scores_filtered = {k: v for k, v in subsection_scores.items() if v is not None}
-        calculate_score_and_send_email(subsection_scores_filtered)
+        section_scores_filtered = {k: v for k, v in section_scores.items() if v is not None}
+        calculate_score_and_send_email(section_scores_filtered)
         return redirect(url_for('thank_you'))
 
     if request.method == 'POST':
@@ -361,8 +385,8 @@ def test():
         # Evaluate user answers and calculate subsection scores
         evaluate_user_answers(user_answers)       
         # Filter out any None values from the subsection_scores dictionary
-        subsection_scores_filtered = {k: v for k, v in subsection_scores.items() if v is not None}
-        calculate_score_and_send_email(subsection_scores_filtered)  # No need to pass receiver_email
+        section_scores_filtered = {k: v for k, v in section_scores.items() if v is not None}
+        calculate_score_and_send_email(section_scores_filtered)  # No need to pass receiver_email
         return redirect(url_for('thank_you'))
     return render_template('test.html', test_questions=test_questions, time_remaining=time_remaining)
 

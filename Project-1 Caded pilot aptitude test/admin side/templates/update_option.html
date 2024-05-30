@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+<h1>Update Option</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ wtf.form_field(form.option_text) }}
+    {{ wtf.form_field(form.is_correct) }}
+    <input type="hidden" name="option_id" value="{{ request.args.get('option_id') }}">
+    {{ wtf.form_field(form.submit) }}
+</form>
+{% endblock %}

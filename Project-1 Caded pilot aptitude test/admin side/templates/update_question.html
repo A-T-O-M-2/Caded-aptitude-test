@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+<h1>Update Question</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    {{ wtf.form_field(form.question_text) }}
+    {{ wtf.form_field(form.section) }}
+    {{ wtf.form_field(form.subsection) }}
+    <input type="hidden" name="question_id" value="{{ request.args.get('question_id') }}">
+    {{ wtf.form_field(form.submit) }}
+</form>
+{% endblock %}

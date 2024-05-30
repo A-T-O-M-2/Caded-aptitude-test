@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Portal</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('add_passage') }}">Add Passage</a></li>
+            <li><a href="{{ url_for('update_passage') }}">Update Passage</a></li>
+            <li><a href="{{ url_for('delete_passage') }}">Delete Passage</a></li>
+            <li><a href="{{ url_for('add_question') }}">Add Question</a></li>
+            <li><a href="{{ url_for('update_question') }}">Update Question</a></li>
+            <li><a href="{{ url_for('delete_question') }}">Delete Question</a></li>
+            <li><a href="{{ url_for('add_option') }}">Add Option</a></li>
+            <li><a href="{{ url_for('update_option') }}">Update Option</a></li>
+            <li><a href="{{ url_for('delete_option') }}">Delete Option</a></li>
+        </ul>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>
