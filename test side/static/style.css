@@ -1,0 +1,98 @@
+/* style.css */
+
+/* Reset some default styles */
+body, h1, h2, p, form, div {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic styles for the body */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+/* Container for the main content */
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Header styles */
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 20px 0 10px;
+}
+
+/* Styles for paragraphs */
+p {
+    margin-bottom: 15px;
+}
+
+/* Timer display */
+.sticky-div {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* Form styles */
+form {
+    margin-top: 20px;
+}
+
+/* Question container */
+.question {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+
+/* Radio button styles */
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+/* Button styles */
+button {
+    display: inline-block;
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* Clear selection button */
+.clear-selection {
+    background: #dc3545;
+    margin-top: 10px;
+}
+
+.clear-selection:hover {
+    background: #c82333;
+}
