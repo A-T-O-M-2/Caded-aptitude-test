@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Update Passage</h1>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.passage_id) }}
+        {{ wtf.form_field(form.passage_text) }}
+        {{ wtf.form_field(form.submit, class_="btn btn-primary") }}
+    </form>
+</div>
+{% endblock %}

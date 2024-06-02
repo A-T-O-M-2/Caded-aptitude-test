@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+<h1>Get Question</h1>
+<form method="post">
+    {{ form.csrf_token }}
+    {{ wtf.form_field(form.question_id) }}
+    <button type="submit" class="btn btn-primary">Get Question</button>
+</form>
+{% endblock %}
