@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        Eifta Aptitude Test
+    </title>
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container centered">
+            <img class="logo" src="/static/fulllogo_nobuffer.jpg" alt="Logo">
+        </div>
+        <h1 class="centered">Eifta Aptitude Test</h1>
+
+        {% if error %}
+        <p style="color: red; text-align: center;">{{ error }}</p>
+        {% endif %}
+        <form class="test-form login-container" method="post">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn-primary">Start Test</button>
+        </form>
+
+        <div >
+            <h2 class="centered instructions">Test Instructions</h2>
+            <ol> 
+                <li> Please read the instructions, carefully before starting the test.</li>
+                <li> The test has 4 sections - Maths, Physics, English, Reasoning.</li>
+                <li> The test comprises of 100 questions.</li>
+                <li> The total duration of the test is 90 mins.</li>
+                <li> Please do not take screenshots/switch windows/switch tabs/Go back. Doing so will either terminate the test or reduce the time of the test. </li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
