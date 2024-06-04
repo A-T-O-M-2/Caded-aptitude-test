@@ -16,7 +16,7 @@ import time
 from datetime import datetime, timedelta
 import pytz
 
-mysql_password = "Qwerty12"
+mysql_password = "1two3Four!"
 
 app = Flask(__name__)
 app.secret_key = 'fbwBEJKWFBKWEFEW'

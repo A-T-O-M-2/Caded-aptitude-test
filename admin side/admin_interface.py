@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 # Connect to MySQL database
-mysql_password = "Qwerty12"
+mysql_password = "1two3Four!"
 db = mysql.connector.connect(
     host="localhost",
     user="root",

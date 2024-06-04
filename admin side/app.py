@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "ciycttuvuvuy"
 csrf = CSRFProtect(app)
 Bootstrap(app)
-mysql_password = "Qwerty12"
+mysql_password = "1two3Four!"
 db = mysql.connector.connect(
     host="localhost",
     user="root",

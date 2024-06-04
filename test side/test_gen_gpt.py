@@ -16,7 +16,7 @@ import time
 from datetime import datetime, timedelta
 import pytz
 
-mysql_password = "Qwerty12"
+mysql_password = "1two3Four!"
 
 app = Flask(__name__)
 app.secret_key = 'fbwBEJKWFBKWEFEW'
@@ -54,15 +54,12 @@ cursor = db.cursor()
 #     return questions
 def get_random_questions(section, num_questions):
     sql = """
-        SELECT q.question_id, q.question_text, qi.image_data,
-               o.option_id, o.option_text, o.is_correct, oi.image_data
+        SELECT q.question_id, q.question_text, qi.image_data
         FROM questions q
         LEFT JOIN question_images qi ON q.question_id = qi.question_id
-        LEFT JOIN options o ON q.question_id = o.question_id
-        LEFT JOIN option_images oi ON o.option_id = oi.option_id
         WHERE q.section = %s AND q.passage_id IS NULL
         ORDER BY RAND()
-        LIMIT %s
+        LIMIT %s;
     """
     values = (section, num_questions)
     cursor.execute(sql, values)
@@ -73,7 +70,8 @@ def get_random_questions(section, num_questions):
     current_question = None
 
     for result in results:
-        question_id, question_text, question_image_data, option_id, option_text, is_correct, option_image_data = result
+        question_id, question_text, question_image_data = result
+        print(f'{question_text[:20]} -> {question_id} {question_image_data} ')
 
         if current_question is None or question_id != current_question["id"]:
             current_question = {
@@ -83,13 +81,7 @@ def get_random_questions(section, num_questions):
                 "options": []
             }
             questions.append(current_question)
-        if option_id is not None:
-            current_question["options"].append({
-                "id": option_id,
-                "text": option_text,
-                "is_correct": is_correct,
-                "option_image_data": option_image_data
-            })
+
 
     random.shuffle(questions)
     return questions
