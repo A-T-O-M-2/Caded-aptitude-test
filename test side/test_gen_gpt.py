@@ -543,8 +543,8 @@ def get_passage_text(passage_id):
 def start_timer():
     if 'start_timer' not in session:
         session['start_timer'] = datetime.now(pytz.utc)
-        session['duration'] = 60  # 90 minutes in seconds
-        # session['duration'] = 5400  # 90 minutes in seconds
+        #session['duration'] = 60  # 90 minutes in seconds
+        session['duration'] = 5400  # 90 minutes in seconds
         return 'Timer started'
     return 'Timer already started'
 
