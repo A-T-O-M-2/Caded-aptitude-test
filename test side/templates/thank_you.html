@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thank you for taking the test</title>
+    <link rel="stylesheet" href="/static/index.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function disableBack() { window.history.forward(); }
+
+            window.onload = disableBack();
+            window.onpageshow = function(evt) { if (evt.persisted) disableBack(); }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container centered">
+            <img class="logo" src="/static/fulllogo_nobuffer.jpg" alt="Logo">
+        </div>
+        <div class="centered">
+            <h1>Thank you for taking the test</h1>
+            <h3>We will get back to you shortly.</h3>
+        </div>
+    </div>
+</body>
+</html>

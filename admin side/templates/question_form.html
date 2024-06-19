@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Add Question</h1>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ wtf.form_field(form.question_text, class="form-control", rows="4") }}
+        </div>
+        <div class="form-group">
+            {{ form.section.label(class="form-control-label") }}
+            {{ form.section(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.subsection.label(class="form-control-label") }}
+            {{ form.subsection(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ wtf.form_field(form.passage_id, class="form-control") }}
+        </div>
+
+        <h2 class="mt-4">Options</h2>
+        {% for option_form in form.options %}
+        <div class="form-group">
+            {{ wtf.form_field(option_form.option_text, class="form-control", rows="2") }}
+            <div class="form-check">
+                {{ option_form.is_correct(class="form-check-input") }}
+                {{ option_form.is_correct.label(class="form-check-label") }}
+            </div>
+        </div>
+        {% endfor %}
+
+        {{ wtf.form_field(form.submit, class="btn btn-primary") }}
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var subsectionChoices = {
+            'mathematics': [
+                { value: 'algebra', text: 'Algebra' },
+                { value: 'mordern_maths', text: 'Mordern Maths' },
+                { value: 'areas_volumes', text: 'Areas and Volume' },
+                { value: 'number_theory', text: 'Number Theory' },
+                { value: 'trigonometry', text: 'Trigonometry' },
+                { value: 'arthematic', text: 'Arthematic' },
+                { value: 'geometry_circles_triangles', text: 'Geometry - Circles and Triangles' }
+            ],
+            'physics': [
+                { value: 'laws_of_motion', text: 'Laws of Motion' },
+                { value: 'work_energy_power', text: 'Work, Energy, Power' },
+                { value: 'gravitation', text: 'Gravitation' },
+                { value: 'properties_solids_fluids', text: 'Properties of Solids and Fluids' },
+                { value: 'electrostatics', text: 'Electrostatics' },
+                { value: 'current_electricity', text: 'Current Electricity' },
+                { value: 'magnetism', text: 'Magnetic Effect of Current and Magnetism' },
+                { value: 'optic', text: 'Optics'}
+            ],
+            'english': [
+                { value: 'antonyms', text: 'Antonyms' },
+                { value: 'synonyms', text: 'Synonyms' },
+                { value: 'passage', text: 'Passage' },
+                { value: 'grammar', text: 'Grammar' },
+                { value: 'idioms', text: 'Idioms' }
+            ],
+            'reasoning': [
+                { value: 'numerical_reasoning', text: 'Numerical Reasoning' },
+                { value: 'verbal_reasoning', text: 'Verbal Reasoning' }
+            ]
+        };
+
+        var subsectionDropdown = $('#subsection');
+        subsectionDropdown.val('');  // Set initial value to an empty string
+
+        $('#section').change(function () {
+            var selectedSection = $(this).val();
+            subsectionDropdown.empty();
+
+            if (selectedSection in subsectionChoices) {
+                $.each(subsectionChoices[selectedSection], function (index, choice) {
+                    subsectionDropdown.append($('<option>', {
+                        value: choice.value,
+                        text: choice.text
+                    }));
+                });
+            } else {
+                subsectionDropdown.val('');  // Set value to an empty string if no choices are available
+            }
+        });
+    });
+</script>
+{% endblock %}

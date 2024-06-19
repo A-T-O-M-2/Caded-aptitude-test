@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eifta Aptitude Test</title>
+    <style>
+        /* removes selection */
+        /* body {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        } */
+        
+        /* doesnt allow to print */
+        @media print {
+            body {
+                display: none;
+            }
+        }
+        
+        </style>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/test.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>
+        <img src="/static/fulllogo_nobuffer.jpg" alt="Logo" class="logo">
+        Eifta Aptitude Test
+    </h1>
+    <div >
+        <h2 class="centered instructions">Test Instructions</h2>
+        <ol> 
+            <li> Please read the instructions, carefully before starting the test.</li>
+            <li> The test has 4 sections - Maths, Physics, English, Reasoning.</li>
+            <li> The test comprises of 100 questions.</li>
+            <li> The total duration of the test is 90 mins.</li>
+            <li> Please do not take screenshots/switch windows/switch tabs/Go back. Doing so will either terminate the test or reduce the time of the test. </li>
+        </ol>
+    </div>
+    <p class="sticky-div">Time remaining: <span id="timer">##:##</span></p>
+    <form  method="post" action="{{ url_for('test') }}">
+        <input type="hidden" id="start_time" name="start_time" value="">
+        <input type="hidden" id="penalty_time" name="penalty_time" value="">
+        <input type="hidden" id="tab_switch_counter" name="tab_switch_counter" value="">
+        <script>
+            // Function to auto-submit the form
+            function autoSubmitForm() {
+                document.getElementById('myForm').submit();
+            }
+    
+
+            function checkRemainingTime() {
+                var remainingTime = time_remaining ; 
+                printMessage("time_remaining!");
+                if (remainingTime <= 0) {
+                    autoSubmitForm(); 
+                }
+            }
+            checkRemainingTime();
+    
+         
+        </script>
+        {% for section, data in test_questions.items() %}
+        <h2>{{ section.capitalize() }}</h2>
+        {% if section == 'english' %}
+            {% if data %}
+                {% for passage_data in data %}
+                <div class="passage">
+                    <p>{{ passage_data.passage_text }}</p>
+                    {% for question in passage_data.questions %}
+                    <div class="question">
+                        <p>{{ question.text }}</p>
+                        {% for option in question.options %}
+                        <div>
+                            <input type="radio" name="question{{ question.id }}" value="{{ option.id }}">
+                            <label>{{ option.text }}</label>
+                        </div>
+                        {% endfor %}
+                        <div>
+                            <button class="clear-selection" style="display: none;">Clear Selection</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No passage-based questions available for the English section.</p>
+            {% endif %}
+        {% else %}
+            {% if data %}
+                {% for question in data %}
+                <div class="question">
+                    <p>{{ question.text }}</p>
+                    {% for option in question.options %}
+                    <div>
+                        <input type="radio" name="question{{ question.id }}" value="{{ option.id }}">
+                        <label>{{ option.text }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No questions available for the {{ section }} section.</p>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
