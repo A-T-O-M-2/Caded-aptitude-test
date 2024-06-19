@@ -287,7 +287,6 @@ def get_question():
         if question_id:
             question = admin_interface.get_question(int(question_id))
             if question:
-                print("Question data:", question)  # Add this line
                 return render_template('question_detail.html', question=question)
             else:
                 flash('Question not found.', 'error')
